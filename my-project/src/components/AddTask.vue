@@ -1,72 +1,39 @@
 <template>
   <div>
     <p>Add task</p>
-    <ul v-if="addTask">
-      <CustomInput
-        :key="addTask.id"
-        :todo="addTask"
-      />
-    </ul>
-    <p v-else>
-      Nothing left in the list. Add a new todo in the input above.
-    </p>
-    <ul>
-      <CustomTextArea v-for="el in taskContent"
-                      :key="el.id"
-                      :todo="el"/>
-    </ul>
-    <CustomDate/>
-    <p>А тут будут звездочки</p>
-    <div class="buttons">
-      <Buttons
-        :key="buttonArrayAdd.id"
-        :button="buttonArrayAdd"
-      />
+    <div class="container">
+    <form method="post" id="logInForm">
+      <fieldset class="form-group">
+        <input class="form-control" type="text" name="subject" placeholder="Subject">
+      </fieldset>
+      <fieldset class="form-group">
+        <textarea class="form-control" name="summary" placeholder="Summary"></textarea>
+      </fieldset>
+      <fieldset class="form-group">
+        <textarea class="form-control" name="description" placeholder="Description"></textarea>
+      </fieldset>
+      <fieldset class="form-group">
+        <input class="form-control" type="date" name="date" placeholder="Date">
+      </fieldset>
+      <fieldset class="form-group">
+        <input class="form-control" type="number" name="priority" placeholder="Priority">
+      </fieldset>
+      <fieldset class="form-group">
+        <router-link to="/profile"><input class="btn btn-success" type="submit" name="submit" value="Add task">
+        </router-link>
+      </fieldset>
+    </form>
     </div>
-    <router-link to="/">Back</router-link>
   </div>
 </template>
 
 <script>
-  import CustomInput from './CustomInput.vue'
-  import Buttons from './Buttons.vue'
-  import CustomTextArea from './CustomTextArea.vue'
-  import CustomDate from './CustomDate.vue'
 
   let nextTodoId = 1
 
   export default {
-    components: {
-      CustomDate, CustomInput, Buttons, CustomTextArea
-    },
     data() {
-      return {
-        addTask:
-          {
-            id: 1,
-            name: 'subject',
-            placeholder: 'Subject',
-            text: 'Subject'
-          },
-        taskContent: [
-          {
-            id: 1,
-            name: "summary",
-            placeholder: "",
-            text: "Summary"
-          }, {
-            id: 2,
-            name: "description",
-            placeholder: "",
-            text: "Description"
-          }
-        ],
-        buttonArrayAdd:
-          {
-            id: 1,
-            name: 'Add task'
-          }
-      }
+      return {}
     }
   }
 </script>
@@ -108,4 +75,8 @@
     font-size: 200%;
     font-weight: bold;
   }
+  .container{
+    margin-top: 10px;
+     width: 60%;
+   }
 </style>

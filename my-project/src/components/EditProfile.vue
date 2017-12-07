@@ -154,4 +154,8 @@
     font-size: 200%;
     font-weight: bold;
   }
+
+  .container{
+    width: 60%;
+  }
 </style>

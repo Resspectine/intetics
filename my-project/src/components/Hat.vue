@@ -2,9 +2,10 @@
   <div class="hat">
     <div class="left-side-hat">
       <div class="section">Timetable</div>
-      <router-link to="/addTask"><div class="section" id="no-borders">Tasks</div></router-link>
+      <router-link to="/tasks"><div class="section" id="no-borders">Tasks</div></router-link>
     </div>
     <div class="right-side-hat">
+      <router-link to="/"><div class="section">Log out</div></router-link>
       <router-link to="/profile"><div class="section">Profile</div></router-link>
     </div>
   </div>
