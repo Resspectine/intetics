@@ -6,9 +6,9 @@
         <h6 slot="header"
             class="mb-0">Tomorrow</h6>
         <em slot="footer">
-          <b-button href="#"
-                    variant="primary">Go somewhere
-          </b-button>
+          <router-link to="/tasks/add"><b-button
+                    variant="primary">Add task
+          </b-button></router-link>
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[0]"
@@ -25,7 +25,7 @@
             class="mb-0">This week</h6>
         <em slot="footer">
           <router-link to="/tasks/add"><b-button
-                    variant="primary">Go somewhere
+                    variant="primary">Add task
           </b-button></router-link>
         </em>
         <b-list-group flush>
@@ -42,9 +42,9 @@
         <h6 slot="header"
             class="mb-0">Soon</h6>
         <em slot="footer">
-          <b-button href="#"
-                    variant="primary">Go somewhere
-          </b-button>
+          <router-link to="/tasks/add"><b-button
+                    variant="primary">Add task
+          </b-button></router-link>
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[2]"
@@ -72,7 +72,7 @@
       name: 'Course work',
       priority: 2
     }, {
-      i: 3,
+      id: 3,
       name: 'YMF',
       priority: 5
     }
@@ -86,7 +86,7 @@
       name: 'Course work',
       priority: 2
     }, {
-      i: 3,
+      id: 3,
       name: 'YMF',
       priority: 5
     }
@@ -100,7 +100,7 @@
       name: 'Course work',
       priority: 2
     }, {
-      i: 3,
+      id: 3,
       name: 'YMF',
       priority: 5
     }

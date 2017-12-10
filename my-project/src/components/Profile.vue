@@ -21,16 +21,30 @@
     data() {
       return {
         items: items,
-        info: {
-          name: 'Anton',
-          faculty: 'AM',
-          course: '3',
-          group: '8'
-        },
+        info: info,
         toggle: true
+      }
+    },
+    beforeCreate: function () {
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST","/api/user",false);
+      xhr.setRequestHeader("Content-Type","application/json");
+      let router = this.$router;
+      let user = {id: this.$route.params.userId};
+      xhr.send(JSON.stringify(user));
+      if(xhr.status!==200){
+        router.push({name: "LogInPage"});
+      } else{
+        let loaded = JSON.parse(xhr.responseText);
+        info.name = loaded.name;
+        info.faculty = loaded.faculty;
+        info.course = loaded.course;
+        info.group = loaded.group;
       }
     }
   }
+  let info = {};
+
   const items = [
     {enrolledCourses: 'Programming', rating: 10, control: 'Exam 14.01'},
     {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
@@ -70,7 +84,7 @@
 
   .marks {
     width: 60%;
-    height:100%;
+    height: 100%;
   }
 
   .zeroMargins {

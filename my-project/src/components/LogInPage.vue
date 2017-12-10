@@ -3,34 +3,38 @@
     <h1>Student organizer</h1>
     <p style="font-size: 130%">Make the most of your time.</p>
     <div id="error"></div>
-    <form method="post" :class="{visibilityNone: type}" id="signUpForm">
+    <p v-if="error" v-text="error"></p>
+    <form method="post" :class="{visibilityNone: type}" id="signUpForm" @submit.prevent="createUser()">
       <p style="font-size: 150%; color: black">Account information</p>
       <fieldset class="form-group">
-        <input class="form-control" type="email" name="email" placeholder="Your Email">
+        <input class="form-control" v-model="newUser.email" type="email" name="email" placeholder="Your Email" required>
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="password" name="password" placeholder="Password">
+        <input class="form-control" v-model="newUser.password" type="password" name="password" placeholder="Password"
+               required>
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="access_key" placeholder="Confirm password">
+        <input class="form-control" v-model="newUser.confirmPassword" type="password" name="access_key"
+               placeholder="Confirm password" required>
       </fieldset>
       <p style="font-size: 150%; color: black">Student information</p>
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="access_key" placeholder="Name">
+        <input class="form-control" v-model="newUser.name" type="text" name="access_key" placeholder="Name">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="access_key" placeholder="Surname">
+        <input class="form-control" v-model="newUser.surname" type="text" name="access_key" placeholder="Surname">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="access_key" placeholder="Middle name">
+        <input class="form-control" v-model="newUser.middleName" type="text" name="access_key"
+               placeholder="Middle name">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="access_key" placeholder="Faculty">
+        <input class="form-control" v-model="newUser.faculty" type="text" name="access_key" placeholder="Faculty">
       </fieldset>
       <fieldset class="form-group">
         <div class="left">
-          <input class="form-control half" type="text" name="access_key" placeholder="Course">
-          <input class="form-control half" type="text" name="access_key" placeholder="Group">
+          <input class="form-control half" v-model="newUser.course" type="text" name="access_key" placeholder="Course">
+          <input class="form-control half" v-model="newUser.group" type="text" name="access_key" placeholder="Group">
         </div>
       </fieldset>
       <fieldset class="form-group">
@@ -39,7 +43,7 @@
       </fieldset>
       <p><a class="toggleForm" href="#" @click="toggleForms()">Log in</a></p>
     </form>
-    <form method="post" :class="{visibilityNone: !type}" id="logInForm">
+    <form method="post" :class="{visibilityNone: !type}" @submit.prevent="addReview" id="logInForm">
       <fieldset class="form-group">
         <input class="form-control" type="email" name="email" placeholder="Your Email">
       </fieldset>
@@ -67,14 +71,71 @@
   export default {
     data() {
       return {
-        type: false
+        type: false,
+        newUser: {
+          email: "",
+          password: "",
+          confirmPassword: "",
+          name: "",
+          surname: "",
+          middleName: "",
+          faculty: "",
+          course: "",
+          group: ""
+        },
+        error: ""
       }
     },
     methods: {
       toggleForms() {
         this.type = !this.type;
+      },
+      createUser() {
+        let error = "";
+        let router = this.$router;
+        if (this.newUser.password !== this.newUser.confirmPassword) {
+          error += "Passwords is not the same";
+        } else {
+          const temp = JSON.stringify(this.newUser);
+          fetch('/api/signup', {
+            headers: {"Content-Type": "application/json"},
+            method: 'post',
+            body: temp
+          }).then(function (response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("kek");
+            }
+          }).then(function (user) {
+            router.push({name: "Profile", params: {userId: user}});
+          }).catch(function (er) {
+            alert(er);
+          });
+        }
+        this.error = error;
+      },
+      addReview() {
+        if (!this.movie || !this.review.reviewer || !this.review.content) {
+          alert('please make sure all fields are not empty');
+          return
+        }
+        let review = {
+          movie_id: this.movie,
+          content: this.review.content,
+          reviewer: this.review.reviewer,
+          time: new Date().toLocaleDateString()
+        };
+        fetch('/api/review', {
+          method: 'post',
+          body: JSON.stringify(review)
+        }).then(() => {
+          this.review.content = this.review.reviewer = ''
+        })
       }
-    }
+      // ...
+    },
+
   }
 </script>
 
@@ -95,3 +156,4 @@
     width: 60%;
   }
 </style>
+

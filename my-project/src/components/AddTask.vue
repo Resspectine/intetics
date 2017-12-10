@@ -16,7 +16,7 @@
         <input class="form-control" type="date" name="date" placeholder="Date">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="number" name="priority" placeholder="Priority">
+        <input class="form-control" type="number" min="0" name="priority" placeholder="Priority">
       </fieldset>
       <fieldset class="form-group">
         <router-link to="/profile"><input class="btn btn-success" type="submit" name="submit" value="Add task">

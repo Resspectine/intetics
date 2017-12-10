@@ -1,44 +1,54 @@
 <template>
-  <div>
+  <div class="container">
     <p>Edit profile</p>
-    <ul v-if="editProfile.length">
-      <CustomInput
-        v-for="todo in editProfile"
-        :key="todo.id"
-        :todo="todo"
-      />
-    </ul>
-    <p v-else>
-      Nothing left in the list. Add a new todo in the input above.
-    </p>
-    <div class="buttons">
-      <Buttons
-        v-for="button in buttonArrayEdit"
-        :key="button.id"
-        :button="button"
-      />
-    </div>
+    <b-form @submit="" @reset="">
+      <b-form-group label="Faculty:">
+        <b-form-input id="exampleInput1"
+                      type="text"
+                      v-model="form.email"
+                      required
+                      placeholder="Enter faculty">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group label="Group:">
+        <b-form-input id="exampleInput2"
+                      type="number"
+                      v-model="form.name"
+                      required
+                      placeholder="Enter group">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group label="Course:">
+        <b-form-input id="exampleInput2"
+                      type="number"
+                      v-model="form.name"
+                      required
+                      placeholder="Enter course">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group id="exampleInputGroup3" label="Status:">
+        <b-form-input id="exampleInput3"
+                      type="text"
+                      required
+                      v-model="form.food"
+                      placeholder="Live young die fast">
+        </b-form-input>
+      </b-form-group>
+      <b-form-group>
+        <b-button type="submit" variant="primary">Save</b-button>
+      </b-form-group>
+    </b-form>
     <p>Add class</p>
-    <ul>
-      <CustomInput
-        :key="addClass.id"
-        :todo="addClass"
-      />
-    </ul>
-    <div class="selectors">
-      <select>
-        <TypeSelector v-for="type in types"
-                      :key="type.id"
-                      :id="type"/>
-      </select>
-    </div>
-    <div class="buttons">
-      <Buttons
-        :key="buttonArrayAdd.id"
-        :button="buttonArrayAdd"
-      />
-    </div>
-    <router-link to="/">Back</router-link>
+    <b-form>
+      <b-form-group label="Class">
+        <b-form-input type="text"
+                      placeholder="Class"></b-form-input>
+      </b-form-group>
+      <b-form-group label="Class">
+        <b-form-select :options="foods"></b-form-select>
+      </b-form-group>
+      <b-button type="submit" variant="primary">Add class</b-button>
+    </b-form>
   </div>
 </template>
 
@@ -50,104 +60,23 @@
   let nextTodoId = 1
 
   export default {
-    components: {
-      CustomInput, Buttons, TypeSelector
-    },
     data() {
       return {
-        newTodoText: '',
-        editProfile: [
-          {
-            id: 1,
-            name: 'faculty',
-            placeholder: 'Faculty',
-            text: 'Faculty'
-          },
-          {
-            id: 2,
-            name: 'group',
-            placeholder: 'Group',
-            text: 'Group'
-          },
-          {
-            id: 3,
-            name: 'course',
-            placeholder: 'Course',
-            text: 'Course'
-          },
-          {
-            id: 4,
-            name: 'status',
-            placeholder: 'Live fast die young',
-            text: 'Status'
-          }
-        ],
-        buttonArrayEdit: [
-          {
-            id: 1,
-            name: 'Change'
-          }, {
-            id: 2,
-            name: 'Save'
-          }, {
-            id: 3,
-            name: 'Log out'
-          }
-        ],
-        addClass:
-          {
-            id: 1,
-            name: 'class',
-            placeholder: 'Class',
-            text: 'Class'
-          },
-        buttonArrayAdd:
-          {
-            id: 1,
-            name: 'Add class'
-          },
-        types: [
-          {
-            id: 1,
-            name: 'Exam'
-          },
-          {
-            id: 2,
-            name: 'Credit'
-          },
-          {
-            id: 3,
-            name: 'None'
-          }
+        form: {
+          email: '',
+          name: '',
+          food: null,
+          checked: false
+        },
+        foods: [
+          {text: 'Select One', value: null},
+          'Carrots', 'Beans', 'Tomatoes', 'Corn'
         ]
       }
     }
   }
 </script>
 <style scoped>
-  .selectors{
-    margin: 10px auto;
-    width: 30%;
-  }
-
-  select{
-    font-size: 150%;
-    width: 30%;
-  }
-  .buttons {
-    font-size: 150%;
-    margin: 10px auto;
-    width: 30%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  ul {
-    width: 30%;
-    margin: 0 auto;
-    padding: 0;
-  }
-
   p {
     margin: 0;
     text-align: center;
@@ -155,7 +84,7 @@
     font-weight: bold;
   }
 
-  .container{
+  .container {
     width: 60%;
   }
 </style>

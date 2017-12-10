@@ -23,7 +23,7 @@ export default new Router({
       name: 'Edit profile',
       component: EditProfile
     }, {
-      path: '/profile',
+      path: '/profile/:userId',
       name: 'Profile',
       component: Profile
     }, {
