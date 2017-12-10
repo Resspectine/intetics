@@ -25,10 +25,6 @@
         <input class="form-control" v-model="newUser.surname" type="text" name="access_key" placeholder="Surname">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" v-model="newUser.middleName" type="text" name="access_key"
-               placeholder="Middle name">
-      </fieldset>
-      <fieldset class="form-group">
         <input class="form-control" v-model="newUser.faculty" type="text" name="access_key" placeholder="Faculty">
       </fieldset>
       <fieldset class="form-group">
@@ -68,6 +64,8 @@
 </template>
 
 <script>
+  import bus from "../bus";
+
   export default {
     data() {
       return {
@@ -78,7 +76,6 @@
           confirmPassword: "",
           name: "",
           surname: "",
-          middleName: "",
           faculty: "",
           course: "",
           group: ""
@@ -108,6 +105,8 @@
               throw new Error("kek");
             }
           }).then(function (user) {
+            localStorage.setItem('userId', user);
+            bus.$emit('userin', user);
             router.push({name: "Profile", params: {userId: user}});
           }).catch(function (er) {
             alert(er);
@@ -115,6 +114,11 @@
         }
         this.error = error;
       },
+      // beforeMount: function () {
+      //   console.log(this.$route.params.userId);
+      //   // console.log('out');
+      //   // bus.$emit('userout');
+      // },
       addReview() {
         if (!this.movie || !this.review.reviewer || !this.review.content) {
           alert('please make sure all fields are not empty');

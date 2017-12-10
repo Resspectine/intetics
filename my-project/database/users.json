@@ -1,1 +1,15 @@
-[{"email":"b@b.c","password":"h","confirmPassword":"h","name":"ji","surname":"ji","middleName":"ji","faculty":"ji","course":"3","group":"3","id":"02dfe6dd4c","_id":"2a83b6af81ef4b0e947441edcb734749"}]
+[
+  {
+    "email": "kek@rer.c",
+    "password": "r",
+    "confirmPassword": "r",
+    "name": "",
+    "surname": "",
+    "faculty": "kek",
+    "course": "3",
+    "group": "3",
+    "id": "0bfaefb35dc56324f8",
+    "_id": "e693ab53cea249f794ce29429593a42a",
+    "status": "krk"
+  }
+]

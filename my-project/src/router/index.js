@@ -5,6 +5,7 @@ import AddTask from '../components/AddTask.vue'
 import EditProfile from '../components/EditProfile.vue'
 import Profile from '../components/Profile.vue'
 import Tasks from '../components/Tasks.vue'
+import bus from '../bus'
 
 Vue.use(Router)
 
@@ -13,21 +14,33 @@ export default new Router({
     {
       path: '/',
       name: 'LogInPage',
-      component: LogInPage
+      component: LogInPage,
+      beforeEnter: (to, from, next) => {
+        bus.$emit('userout');
+        localStorage.removeItem('userId');
+        next();
+      }
     }, {
       path: '/tasks/add',
       name: 'Tasks add',
       component: AddTask
     }, {
-      path: '/profile/edit',
-      name: 'Edit profile',
+      path: '/profile/:userId/edit',
+      name: 'EditProfile',
       component: EditProfile
     }, {
       path: '/profile/:userId',
       name: 'Profile',
-      component: Profile
+      component: Profile,
+      children: [
+        {
+          path: 'edit',
+          name: 'EditProfile',
+          component: EditProfile
+        }
+      ]
     }, {
-      path: '/tasks',
+      path: '/tasks/:userId',
       name: 'Tasks',
       component: Tasks
     }

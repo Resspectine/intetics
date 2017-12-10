@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Hat/>
+    <Hat :id="id"/>
     <router-view></router-view>
     <!--<AddTask/>-->
   </div>
@@ -10,10 +10,24 @@
   import Hat from './components/Hat.vue'
   import EditProfile from './components/EditProfile.vue'
   import AddTask from './components/AddTask.vue'
+  import bus from './bus'
 
   export default {
+    data(){
+      return{
+        id:''
+      }
+    },
     components: {
       EditProfile, Hat, AddTask
+    },
+    created(){
+      bus.$on('userin', user=>{
+        this.id=user;
+      });
+      bus.$on('userout', user=>{
+        this.id='';
+      })
     }
   }
 </script>

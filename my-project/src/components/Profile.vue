@@ -5,8 +5,8 @@
       <b-table :class="{ zeroMargins: toggle}" striped hover :items="items"></b-table>
       <div class="under">
         <p class="average">Average mark: 10.7;</p>
-        <router-link to="/profile/edit">Edit Profile
-        </router-link>
+        <b-button @click='editProfile'>Edit Profile
+        </b-button>
       </div>
     </div>
   </div>
@@ -15,6 +15,7 @@
 
 <script>
   import Info from './Info.vue';
+  import bus from '../bus'
 
   export default {
     components: {Info},
@@ -23,6 +24,12 @@
         items: items,
         info: info,
         toggle: true
+      }
+    },
+    methods:{
+      editProfile: function () {
+        console.log(info.id);
+        this.$router.push({path: `/profile/${info.id}/edit`});
       }
     },
     beforeCreate: function () {
@@ -40,7 +47,11 @@
         info.faculty = loaded.faculty;
         info.course = loaded.course;
         info.group = loaded.group;
+        info.id = loaded.id;
       }
+    },
+    beforeMount(){
+      bus.$emit('userin',localStorage.getItem('userId'));
     }
   }
   let info = {};

@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname)));
 
 const db = require('diskdb');
-db.connect('database', ['users']);
+db.connect('database', ['users','classes']);
 
 function encrypt(text){
   let cipher = crypto.createCipher(algorithm,password)
@@ -38,6 +38,20 @@ app.post('/signup', (req, res) => {
     res.json(id);
   } else {
     res.status(400).json("Email is taken");
+  }
+});
+app.post('/editprofile', (req, res) => {
+  let user = db.users.findOne({id: req.body.id});
+  if(user) {
+    let userJSON = user;
+    userJSON.faculty = req.body.faculty;
+    userJSON.group = req.body.group;
+    userJSON.status = req.body.status;
+    userJSON.course = req.body.course;
+    let update = db.users.update(req.body,userJSON,{multi: false});
+    res.json("done");
+  } else {
+
   }
 });
 app.post('/user', (req, res) => {

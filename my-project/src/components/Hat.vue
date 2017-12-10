@@ -1,23 +1,41 @@
 <template>
   <div class="hat">
     <div class="left-side-hat">
-      <div class="section">Timetable</div>
-      <router-link to="/tasks"><div class="section" id="no-borders">Tasks</div></router-link>
+      <router-link v-if="id" :to="{ name: 'Tasks', params: { userId: id }}">
+        <div class="section">Timetable</div>
+      </router-link>
+      <router-link v-if="id" :to="{ name: 'Tasks', params: { userId: id }}">
+        <div class="section" id="no-borders">Tasks</div>
+      </router-link>
     </div>
     <div class="right-side-hat">
-      <router-link to="/"><div class="section">Log out</div></router-link>
-      <router-link to="/profile"><div class="section">Profile</div></router-link>
+      <router-link v-if="id" :to="{name: 'LogInPage'}">
+        <div class="section">Log out</div>
+      </router-link>
+      <router-link v-if="id" :to="{ name: 'Profile', params: { userId: id }}">
+        <div class="section">Profile</div>
+      </router-link>
     </div>
   </div>
 </template>
 <script>
-  export default {}
+  import bus from "../bus"
+
+
+  export default {
+    data() {
+      return {
+      }
+    },
+    props:{
+      id:{
+        type: String
+      }
+    }
+  }
 </script>
-<style>
-  .left-side-hat{
-  }
-  .right-side-hat{
-  }
+<style scoped>
+
   .hat {
     background-color: #d8e5ff;
     display: flex;
@@ -27,7 +45,7 @@
   }
 
   .section {
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
     display: inline-block;
     text-align: center;
     font-size: 150%;
@@ -37,7 +55,7 @@
   }
 
   .section:hover {
-    color: rgba(255,255,255,1);
+    color: rgba(255, 255, 255, 1);
   }
 
 </style>
