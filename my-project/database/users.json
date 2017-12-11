@@ -1,15 +1,24 @@
 [
   {
-    "email": "kek@rer.c",
-    "password": "r",
-    "confirmPassword": "r",
-    "name": "",
-    "surname": "",
-    "faculty": "kek",
+    "email": "kek@hj.c",
+    "password": "u",
+    "name": "Maksim",
+    "surname": "Stefanenko",
+    "faculty": "AM",
     "course": "3",
-    "group": "3",
-    "id": "0bfaefb35dc56324f8",
-    "_id": "e693ab53cea249f794ce29429593a42a",
-    "status": "krk"
+    "group": "8",
+    "id": "0bfaefb347ca3f69",
+    "_id": "9f26f60c68af42b889cae7d3dfbb8d5a"
+  },
+  {
+    "email": "rek@k.c",
+    "password": "k",
+    "name": "Privet",
+    "surname": "Poka",
+    "faculty": "PM",
+    "course": "3",
+    "group": "8",
+    "id": "12faefb3448e72",
+    "_id": "889cb38514974284b29b54fd9355f0f0"
   }
 ]

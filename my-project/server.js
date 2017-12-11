@@ -14,23 +14,37 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname)));
 
 const db = require('diskdb');
-db.connect('database', ['users','classes']);
+db.connect('database', ['users', 'classes', 'timetable']);
 
-function encrypt(text){
-  let cipher = crypto.createCipher(algorithm,password)
-  let crypted = cipher.update(text,'utf8','hex')
+
+function encrypt(text) {
+  let cipher = crypto.createCipher(algorithm, password)
+  let crypted = cipher.update(text, 'utf8', 'hex')
   crypted += cipher.final('hex');
   return crypted;
 }
 
-function decrypt(text){
-  let decipher = crypto.createDecipher(algorithm,password)
-  let dec = decipher.update(text,'hex','utf8')
+function decrypt(text) {
+  let decipher = crypto.createDecipher(algorithm, password)
+  let dec = decipher.update(text, 'hex', 'utf8')
   dec += decipher.final('utf8');
   return dec;
 }
+
+app.post('/login', function (req, res) {
+  let user = db.users.findOne({email: req.body.email});
+  console.log(req.body);
+  if (!user) {
+    console.log('Incorrect username.');
+  } else if (user.password !== req.body.password) {
+    console.log('Incorrect password.')
+  } else {
+    res.json(user.id);
+  }
+});
+
 app.post('/signup', (req, res) => {
-  if(!db.users.findOne({email: req.body.email})) {
+  if (!db.users.findOne({email: req.body.email})) {
     let id = encrypt(req.body.email);
     req.body.id = id;
     db.users.save(req.body);
@@ -42,13 +56,13 @@ app.post('/signup', (req, res) => {
 });
 app.post('/editprofile', (req, res) => {
   let user = db.users.findOne({id: req.body.id});
-  if(user) {
+  if (user) {
     let userJSON = user;
     userJSON.faculty = req.body.faculty;
     userJSON.group = req.body.group;
     userJSON.status = req.body.status;
     userJSON.course = req.body.course;
-    let update = db.users.update(req.body,userJSON,{multi: false});
+    let update = db.users.update(req.body, userJSON, {multi: false});
     res.json("done");
   } else {
 
@@ -56,10 +70,84 @@ app.post('/editprofile', (req, res) => {
 });
 app.post('/user', (req, res) => {
   let user = db.users.findOne({id: req.body.id})
-  if(user) {
+  if (user) {
     res.json(user);
   } else {
     console.log("no such user");
+    res.status(400).end();
+  }
+});
+app.post('/addclass', (req, res) => {
+  let save = db.classes.save(req.body);
+  if (save) {
+    res.json('saved correct');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/getclasses', (req, res) => {
+  let classes = db.classes.find({id: req.body.id});
+  if (classes) {
+    res.json(classes);
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/addlesson', (req, res) => {
+  let lesson = db.timetable.save(req.body);
+  if (lesson) {
+    res.json('success');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/getlessons', (req, res) => {
+  let lessons = db.timetable.find({id: req.body.id});
+  let buff = {time:{}};
+  if (lessons) {
+    if (req.body.currentDay) {
+      let option = {weekday: 'long'};
+      let date = new Date(req.body.currentDay);
+      let day = date.toLocaleString('en-US', option);
+      let response = [];
+      lessons.forEach(function (lesson) {
+        buff.time.first = lesson.begin;
+        buff.time.last = lesson.end;
+        buff.name = lesson.name;
+        buff.hall = lesson.hall;
+        if (lesson.day === day) {
+          response.push(buff);
+        } else if (lesson.selected === 'day') {
+          response.push(buff);
+        }
+        buff={time:{}};
+      });
+      res.json(response);
+    } else {
+      let option = {weekday: 'long'};
+      let date = new Date();
+      let day = date.toLocaleString('en-US', option);
+      let response = [];
+      lessons.forEach(function (lesson) {
+        buff.time.first = lesson.begin;
+        buff.time.last = lesson.end;
+        buff.name = lesson.name;
+        buff.hall = lesson.hall;
+        if (lesson.day === day) {
+          response.push(buff);
+        } else if (lesson.selected === 'day') {
+          response.push(buff);
+        }
+        buff={time:{}};
+      });
+      res.json(response);
+      //let filter = {day : new d};
+    }
+  } else {
+    console.log("some problems");
     res.status(400).end();
   }
 });

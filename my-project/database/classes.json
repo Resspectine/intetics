@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "className": "fred",
+    "type": "Credit",
+    "id": "0bfaefb347ca3f69",
+    "_id": "ccbd00a0f6a7484680d9e2670257673f"
+  },
+  {
+    "className": "fr",
+    "type": "Credit",
+    "id": "0bfaefb347ca3f69",
+    "_id": "87dbe77a82564e6d95db4ad8dbd343b5"
+  }
+]

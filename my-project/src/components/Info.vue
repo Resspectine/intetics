@@ -5,7 +5,7 @@
     <img height="43 px" width="250  px"
          src="https://demiart.ru/forum/uploads2/post-68266-1235419808.jpg">
     <div>
-      <p class="name" v-text="info.name"></p>
+      <p class="name" v-text="info.name+' '+info.surname"></p>
       <p class="name" v-text="info.faculty">Your Faculty</p>
       <p class="name" v-text="info.course+' course'">Your Course</p>
       <p class="name" v-text="info.group+' group'">Your Group</p>

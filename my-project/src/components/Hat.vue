@@ -1,7 +1,7 @@
 <template>
   <div class="hat">
     <div class="left-side-hat">
-      <router-link v-if="id" :to="{ name: 'Tasks', params: { userId: id }}">
+      <router-link v-if="id" :to="{ name: 'Timetable', params: { userId: id }}">
         <div class="section">Timetable</div>
       </router-link>
       <router-link v-if="id" :to="{ name: 'Tasks', params: { userId: id }}">

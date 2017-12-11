@@ -6,13 +6,13 @@
         <h6 slot="header"
             class="mb-0">Tomorrow</h6>
         <em slot="footer">
-          <router-link to="/tasks/add"><b-button
+          <b-button @click="addTask"
                     variant="primary">Add task
-          </b-button></router-link>
+          </b-button>
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[0]"
-          :id="task.id"
+                             :id="task.id"
           >
             <TaskElement
               :task="task"/>
@@ -24,27 +24,31 @@
         <h6 slot="header"
             class="mb-0">This week</h6>
         <em slot="footer">
-          <router-link to="/tasks/add"><b-button
-                    variant="primary">Add task
-          </b-button></router-link>
+          <router-link to="/tasks/add">
+            <b-button
+              variant="primary">Add task
+            </b-button>
+          </router-link>
         </em>
         <b-list-group flush>
-        <b-list-group-item v-for="task in tasks[1]"
-                           :id="task.id"
-        >
-          <TaskElement
-            :task="task"/>
-        </b-list-group-item>
-      </b-list-group>
+          <b-list-group-item v-for="task in tasks[1]"
+                             :id="task.id"
+          >
+            <TaskElement
+              :task="task"/>
+          </b-list-group-item>
+        </b-list-group>
       </b-card>
       <b-card header-tag="header"
               footer-tag="footer">
         <h6 slot="header"
             class="mb-0">Soon</h6>
         <em slot="footer">
-          <router-link to="/tasks/add"><b-button
-                    variant="primary">Add task
-          </b-button></router-link>
+          <router-link to="/tasks/add">
+            <b-button
+              variant="primary">Add task
+            </b-button>
+          </router-link>
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[2]"
@@ -61,6 +65,7 @@
 
 <script>
   import TaskElement from "./TaskElement.vue"
+  import bus from '../bus'
 
   const tasks = [[
     {
@@ -76,7 +81,7 @@
       name: 'YMF',
       priority: 5
     }
-  ],[
+  ], [
     {
       id: 1,
       name: 'Programming',
@@ -90,7 +95,7 @@
       name: 'YMF',
       priority: 5
     }
-  ],[
+  ], [
     {
       id: 1,
       name: 'Programming',
@@ -109,9 +114,19 @@
     components: {TaskElement},
     data() {
       return {
-        tasks: tasks
+        tasks: tasks,
+        id: ''
       }
-    }
+    },
+    beforeMount() {
+      this.id = this.$route.params.userId;
+      bus.$emit('userin', localStorage.getItem('userId'));
+    },
+    methods: {
+      addTask: function () {
+        this.$router.push({path: `/tasks/${this.id}/add`});
+      }
+    },
   }
 </script>
 <style scoped>

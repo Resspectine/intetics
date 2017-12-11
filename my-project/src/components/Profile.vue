@@ -5,7 +5,7 @@
       <b-table :class="{ zeroMargins: toggle}" striped hover :items="items"></b-table>
       <div class="under">
         <p class="average">Average mark: 10.7;</p>
-        <b-button @click='editProfile'>Edit Profile
+        <b-button variant="primary" @click='editProfile'>Edit Profile
         </b-button>
       </div>
     </div>
@@ -28,7 +28,6 @@
     },
     methods:{
       editProfile: function () {
-        console.log(info.id);
         this.$router.push({path: `/profile/${info.id}/edit`});
       }
     },
@@ -44,10 +43,25 @@
       } else{
         let loaded = JSON.parse(xhr.responseText);
         info.name = loaded.name;
+        info.surname = loaded.surname;
         info.faculty = loaded.faculty;
         info.course = loaded.course;
         info.group = loaded.group;
         info.id = loaded.id;
+      }
+      xhr = new XMLHttpRequest();
+      xhr.open("POST","/api/getclasses",false);
+      xhr.setRequestHeader("Content-Type","application/json");
+      xhr.send(JSON.stringify(user));
+      if(xhr.status!==200){
+      } else{
+        let loaded = JSON.parse(xhr.responseText);
+        loaded.forEach(function (clas) {
+          template.enrolledCourses = clas.className;
+          template.control = clas.type;
+          items.push(template);
+          template={};
+        })
       }
     },
     beforeMount(){
@@ -56,17 +70,9 @@
   }
   let info = {};
 
-  const items = [
-    {enrolledCourses: 'Programming', rating: 10, control: 'Exam 14.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'},
-    {enrolledCourses: 'YMF', rating: 8, control: 'Exam 25.01'}
+  let template={};
+
+  let items = [
   ]
 </script>
 
@@ -100,5 +106,6 @@
 
   .zeroMargins {
     margin: 0;
+    width: 100%;
   }
 </style>

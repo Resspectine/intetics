@@ -5,6 +5,8 @@ import AddTask from '../components/AddTask.vue'
 import EditProfile from '../components/EditProfile.vue'
 import Profile from '../components/Profile.vue'
 import Tasks from '../components/Tasks.vue'
+import TimeTable from '../components/Timetable.vue'
+import AddLesson from '../components/AddLesson'
 import bus from '../bus'
 
 Vue.use(Router)
@@ -21,7 +23,7 @@ export default new Router({
         next();
       }
     }, {
-      path: '/tasks/add',
+      path: '/tasks/:userId/add',
       name: 'Tasks add',
       component: AddTask
     }, {
@@ -32,17 +34,18 @@ export default new Router({
       path: '/profile/:userId',
       name: 'Profile',
       component: Profile,
-      children: [
-        {
-          path: 'edit',
-          name: 'EditProfile',
-          component: EditProfile
-        }
-      ]
     }, {
       path: '/tasks/:userId',
       name: 'Tasks',
       component: Tasks
+    }, {
+      path: '/timetable/:userId',
+      name: 'Timetable',
+      component: TimeTable
+    } , {
+      path: '/timetable/:userId/addlesson',
+      name: 'AddLesson',
+      component: AddLesson
     }
   ]
 })

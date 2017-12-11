@@ -10,6 +10,8 @@
   import Hat from './components/Hat.vue'
   import EditProfile from './components/EditProfile.vue'
   import AddTask from './components/AddTask.vue'
+  import TimeTable from './components/Timetable'
+  import AddLesson from './components/AddLesson'
   import bus from './bus'
 
   export default {
@@ -19,7 +21,7 @@
       }
     },
     components: {
-      EditProfile, Hat, AddTask
+      EditProfile, Hat, AddTask, TimeTable, AddLesson
     },
     created(){
       bus.$on('userin', user=>{

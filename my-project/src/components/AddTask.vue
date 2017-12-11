@@ -29,11 +29,14 @@
 
 <script>
 
-  let nextTodoId = 1
 
+  import bus from '../bus'
   export default {
     data() {
       return {}
+    },
+    beforeMount() {
+      bus.$emit('userin', localStorage.getItem('userId'));
     }
   }
 </script>

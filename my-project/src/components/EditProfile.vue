@@ -39,13 +39,15 @@
       </b-form-group>
     </b-form>
     <p>Add class</p>
-    <b-form @submit.prevent="addClass">
+    <b-form @submit.prevent="addClass()">
       <b-form-group label="Class">
-        <b-form-input type="text"
+        <b-form-input v-model="formAddClass.className"
+                      type="text"
                       placeholder="Class"></b-form-input>
       </b-form-group>
       <b-form-group>
-        <b-form-select :options="foods"></b-form-select>
+        <b-form-select v-model="formAddClass.type"
+                       :options="foods"></b-form-select>
       </b-form-group>
       <b-button type="submit" variant="primary">Add class</b-button>
     </b-form>
@@ -53,9 +55,7 @@
 </template>
 
 <script>
-  import CustomInput from './CustomInput.vue'
-  import Buttons from './Buttons.vue'
-  import TypeSelector from './TypeSelector.vue'
+  import bus from '../bus'
 
   export default {
     data() {
@@ -66,8 +66,16 @@
           course: '',
           status: ''
         },
+        formAddClass: {
+          className: '',
+          type: null
+        },
         foods: [
-          'Exam', 'Credit', 'Course work', 'Course project', 'None'
+          'Exam',
+          'Credit',
+          'Course work',
+          'Course project',
+          'None'
         ]
       }
     },
@@ -98,11 +106,37 @@
         }).catch(function (er) {
           alert(er);
         });
-
+        this.form.faculty = '';
+        this.form.group = '';
+        this.form.status = '';
+        this.form.course = '';
       },
       addClass: function () {
-
+        let className = this.formAddClass;
+        let router = this.$route;
+        className.id = router.params.userId;
+        const temp = JSON.stringify(className);
+        fetch('/api/addclass', {
+          headers: {"Content-Type": "application/json"},
+          method: 'post',
+          body: temp
+        }).then(function (response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("kek");
+          }
+        }).then(function (user) {
+          console.log(user);
+        }).catch(function (er) {
+          alert(er);
+        });
+        this.formAddClass.className = '';
+        this.formAddClass.type = null;
       }
+    },
+    beforeMount() {
+      bus.$emit('userin', localStorage.getItem('userId'));
     }
   }
 </script>
