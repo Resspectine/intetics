@@ -2,25 +2,24 @@
   <div>
     <p>Add task</p>
     <div class="container">
-    <form method="post" id="logInForm">
+    <form method="post" @submit.prevent="addTask">
       <fieldset class="form-group">
-        <input class="form-control" type="text" name="subject" placeholder="Subject">
+        <input class="form-control" type="text" v-model="form.subject" placeholder="Subject">
       </fieldset>
       <fieldset class="form-group">
-        <textarea class="form-control" name="summary" placeholder="Summary"></textarea>
+        <textarea class="form-control" v-model="form.summary" placeholder="Summary"></textarea>
       </fieldset>
       <fieldset class="form-group">
-        <textarea class="form-control" name="description" placeholder="Description"></textarea>
+        <textarea class="form-control" v-model="form.description" placeholder="Description"></textarea>
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="date" name="date" placeholder="Date">
+        <input class="form-control" type="date" v-model="form.date" placeholder="Date">
       </fieldset>
       <fieldset class="form-group">
-        <input class="form-control" type="number" min="0" name="priority" placeholder="Priority">
+        <input class="form-control" type="number" min="0" v-model="form.priority" placeholder="Priority">
       </fieldset>
       <fieldset class="form-group">
-        <router-link to="/profile"><input class="btn btn-success" type="submit" name="submit" value="Add task">
-        </router-link>
+        <input class="btn btn-success" type="submit" name="submit" value="Add task">
       </fieldset>
     </form>
     </div>
@@ -33,7 +32,37 @@
   import bus from '../bus'
   export default {
     data() {
-      return {}
+      return {
+        form: {
+          subject:'',
+          summary:'',
+          description:'',
+          date:null,
+          priority: null
+        }
+      }
+    },
+    methods: {
+      addTask: function () {
+        let temp = this.form;
+        temp.id = this.$route.params.userId;
+        temp = JSON.stringify(this.form);
+        fetch('/api/addtask', {
+        headers: {"Content-Type": "application/json"},
+        method: 'post',
+        body: temp
+      }).then(function (response) {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("kek");
+        }
+      }).then(function (user) {
+        console.log(user);
+      }).catch(function (er) {
+        alert(er);
+      });
+      }
     },
     beforeMount() {
       bus.$emit('userin', localStorage.getItem('userId'));

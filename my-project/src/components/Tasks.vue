@@ -12,7 +12,7 @@
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[0]"
-                             :id="task.id"
+                             :id="task.taskId"
           >
             <TaskElement
               :task="task"/>
@@ -32,7 +32,7 @@
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[1]"
-                             :id="task.id"
+                             :id="task.taskId"
           >
             <TaskElement
               :task="task"/>
@@ -52,7 +52,7 @@
         </em>
         <b-list-group flush>
           <b-list-group-item v-for="task in tasks[2]"
-                             :id="task.id"
+                             :id="task.taskId"
           >
             <TaskElement
               :task="task"/>
@@ -67,49 +67,7 @@
   import TaskElement from "./TaskElement.vue"
   import bus from '../bus'
 
-  const tasks = [[
-    {
-      id: 1,
-      name: 'Programming',
-      priority: 4
-    }, {
-      id: 2,
-      name: 'Course work',
-      priority: 2
-    }, {
-      id: 3,
-      name: 'YMF',
-      priority: 5
-    }
-  ], [
-    {
-      id: 1,
-      name: 'Programming',
-      priority: 1
-    }, {
-      id: 2,
-      name: 'Course work',
-      priority: 2
-    }, {
-      id: 3,
-      name: 'YMF',
-      priority: 5
-    }
-  ], [
-    {
-      id: 1,
-      name: 'Programming',
-      priority: 6
-    }, {
-      id: 2,
-      name: 'Course work',
-      priority: 2
-    }, {
-      id: 3,
-      name: 'YMF',
-      priority: 5
-    }
-  ]];
+  const tasks = [[], [], []];
   export default {
     components: {TaskElement},
     data() {
@@ -125,6 +83,29 @@
     methods: {
       addTask: function () {
         this.$router.push({path: `/tasks/${this.id}/add`});
+      }
+    },
+    created() {
+      let counter=0;
+      let date = new Date();
+      let user = {id: this.$route.params.userId};
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/gettasks", false);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify(user));
+      if (xhr.status !== 200) {
+      } else {
+        let loaded = JSON.parse(xhr.responseText);
+        loaded.forEach(function (el) {
+          el.taskId = counter++;
+          if ((new Date(el.date) - date) < 86400000) {
+            tasks[0].push(el);
+          } else if ((new Date(el.date) - date) < 7 * 86400000) {
+            tasks[1].push(el);
+          } else {
+            tasks[2].push(el);
+          }
+        })
       }
     },
   }

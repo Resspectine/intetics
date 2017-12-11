@@ -2,10 +2,10 @@
   <div class="task">
     <div>
       <input type="checkbox">
-      <a href="#">{{task.name}}</a>
+      <a href="#">{{task.subject}}</a>
     </div>
     <div>
-      <icon name="star-o" v-for="n in task.priority"></icon>
+      <icon name="star-o" v-for="n in parseInt(task.priority)"></icon>
     </div>
   </div>
 </template>

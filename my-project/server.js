@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname)));
 
 const db = require('diskdb');
-db.connect('database', ['users', 'classes', 'timetable']);
+db.connect('database', ['users', 'classes', 'timetable','tasks']);
 
 
 function encrypt(text) {
@@ -77,6 +77,24 @@ app.post('/user', (req, res) => {
     res.status(400).end();
   }
 });
+app.post('/addtask', (req, res) => {
+  let save = db.tasks.save(req.body);
+  if (save) {
+    res.json('saved correct');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/gettasks', (req, res) => {
+  let save = db.tasks.find({id:req.body.id});
+  if (save) {
+    res.json(save);
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
 app.post('/addclass', (req, res) => {
   let save = db.classes.save(req.body);
   if (save) {
@@ -96,17 +114,29 @@ app.post('/getclasses', (req, res) => {
   }
 });
 app.post('/addlesson', (req, res) => {
-  let lesson = db.timetable.save(req.body);
-  if (lesson) {
-    res.json('success');
+  let lesson = req.body;
+  if (lesson.lessonId) {
+    let save = db.timetable.update({lessonId: lesson.lessonId}, lesson);
+    if (save) {
+      res.json('success');
+    } else {
+      console.log("some problems");
+      res.status(400).end();
+    }
   } else {
-    console.log("some problems");
-    res.status(400).end();
+    lesson.lessonId = encrypt(lesson.id + lesson.name);
+    let save = db.timetable.save(lesson);
+    if (save) {
+      res.json('success');
+    } else {
+      console.log("some problems");
+      res.status(400).end();
+    }
   }
 });
 app.post('/getlessons', (req, res) => {
   let lessons = db.timetable.find({id: req.body.id});
-  let buff = {time:{}};
+  let buff = {time: {}};
   if (lessons) {
     if (req.body.currentDay) {
       let option = {weekday: 'long'};
@@ -118,12 +148,15 @@ app.post('/getlessons', (req, res) => {
         buff.time.last = lesson.end;
         buff.name = lesson.name;
         buff.hall = lesson.hall;
+        buff.lessonId = lesson.lessonId;
+        buff.professor = lesson.professor;
+        buff.day = lesson.day;
         if (lesson.day === day) {
           response.push(buff);
         } else if (lesson.selected === 'day') {
           response.push(buff);
         }
-        buff={time:{}};
+        buff = {time: {}};
       });
       res.json(response);
     } else {
@@ -136,12 +169,15 @@ app.post('/getlessons', (req, res) => {
         buff.time.last = lesson.end;
         buff.name = lesson.name;
         buff.hall = lesson.hall;
+        buff.lessonId = lesson.lessonId;
+        buff.professor = lesson.professor;
+        buff.day = lesson.day;
         if (lesson.day === day) {
           response.push(buff);
         } else if (lesson.selected === 'day') {
           response.push(buff);
         }
-        buff={time:{}};
+        buff = {time: {}};
       });
       res.json(response);
       //let filter = {day : new d};

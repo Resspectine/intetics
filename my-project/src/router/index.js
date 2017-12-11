@@ -42,10 +42,15 @@ export default new Router({
       path: '/timetable/:userId',
       name: 'Timetable',
       component: TimeTable
-    } , {
+    }, {
       path: '/timetable/:userId/addlesson',
       name: 'AddLesson',
       component: AddLesson
-    }
+    },
+    // {
+    //   path: '/timetable/:lessonId/editlesson',
+    //   name: 'AddLesson',
+    //   component: AddLesson
+    // }
   ]
 })

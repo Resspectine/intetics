@@ -50,6 +50,15 @@
           {text: 'Weekly', value: 'week'}]
       }
     },
+    // created(){
+    //   if(this.$route.params.lessonId){
+    //     bus.$on('editlesson',item=>{
+    //       console.log(item);
+    //       this.formLesson.lessonId=item.lessonId;
+    //       console.log(this.formLesson);
+    //     })
+    //   }
+    // },
     methods: {
       sendLesson() {
         let temp = this.formLesson;

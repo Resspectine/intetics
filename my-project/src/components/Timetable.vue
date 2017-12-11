@@ -5,26 +5,25 @@
     </p>
     <div class="forTable">
       <b-table class="margin" :fields="fields" :items="items">
-        <!-- A virtual column -->
         <template slot="time" scope="data">
           {{data.value.first}} - {{data.value.last}}
         </template>
-        <!-- A custom formatted column -->
         <template slot="name" scope="data">
           {{data.value}}
         </template>
-        <!-- A virtual composite column -->
-        <template slot="nameage" scope="data">
+        <template slot="hall" scope="data">
           {{data.value}}
         </template>
-        <template slot="Actions" scope="data">
-          <div></div>
-        </template>
+        <!--<template slot="lessonId" scope="data">-->
+          <!--<b-button @click="log(data)" size="sm" class="mr-2">-->
+            <!--Edit-->
+          <!--</b-button>-->
+        <!--</template>-->
       </b-table>
     </div>
-      <b-button @click="addLesson" class="add">Add Lesson</b-button>
+    <b-button @click="addLesson" class="add">Add Lesson</b-button>
     <p class="date">Choose date</p>
-    <input v-model="day" type="date" name="calendar" class="calendar">
+    <input v-if="items" v-model="day" type="date" name="calendar" class="calendar">
   </div>
 </template>
 
@@ -35,37 +34,38 @@
     data() {
       return {
         fields: [
-          // A virtual column that doesn't exist in items
           {key: 'time', label: 'Time'},
-          // A column that needs custom formatting
           {key: 'name', label: 'Lesson Name'},
-          // A regular column
           {key: 'hall', label: 'Lecture Hall'},
-          // A regular column
-          'Actions'
+          // {key: 'lessonId', label: 'Actions'}
         ],
         items: [],
         id: '',
-        day:''
+        day: ''
       }
     },
     beforeMount() {
       bus.$emit('userin', localStorage.getItem('userId'));
       this.id = this.$route.params.userId;
     },
-    created(){
+    created() {
       let user = {id: this.$route.params.userId};
       let xhr = new XMLHttpRequest();
-      xhr.open("POST","/api/getlessons",false);
-      xhr.setRequestHeader("Content-Type","application/json");
+      xhr.open("POST", "/api/getlessons", false);
+      xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(JSON.stringify(user));
-      if(xhr.status!==200){
-      } else{
+      if (xhr.status !== 200) {
+      } else {
         let loaded = JSON.parse(xhr.responseText);
+        console.log(loaded);
         this.items = loaded;
       }
     },
-    methods:{
+    methods: {
+      log:function (e) {
+        bus.$emit('editlesson',e.item);
+        this.$router.push({path: `/timetable/${e.value}/editlesson`})
+      },
       addLesson: function () {
         this.$router.push({path: `/timetable/${this.id}/addlesson`});
       }
@@ -74,11 +74,11 @@
       day: function () {
         let user = {id: this.$route.params.userId, currentDay: this.day};
         let xhr = new XMLHttpRequest();
-        xhr.open("POST","/api/getlessons",false);
-        xhr.setRequestHeader("Content-Type","application/json");
+        xhr.open("POST", "/api/getlessons", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify(user));
-        if(xhr.status!==200){
-        } else{
+        if (xhr.status !== 200) {
+        } else {
           let loaded = JSON.parse(xhr.responseText);
           this.items = loaded;
         }
@@ -106,7 +106,7 @@
     font-size: 150%;
     display: table;
     text-align: center;
-    margin:10px auto;
+    margin: 10px auto;
 
   }
 
