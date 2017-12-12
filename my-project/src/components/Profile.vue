@@ -2,9 +2,15 @@
   <div class="container">
     <Info :info="info"/>
     <div class="marks">
-      <b-table :class="{ zeroMargins: toggle}" striped hover :items="items"></b-table>
+      <b-table :fields="fields" :class="{ zeroMargins: toggle}" striped hover :items="items">
+        <template slot="enrolledCourses" scope="data">
+          {{data.value}}
+        </template>
+        <template slot="control" scope="data">
+          {{data.value}}
+        </template>
+      </b-table>
       <div class="under">
-        <p class="average">Average mark: 10.7;</p>
         <b-button variant="primary" @click='editProfile'>Edit Profile
         </b-button>
       </div>
@@ -21,17 +27,21 @@
     components: {Info},
     data() {
       return {
-        items: items,
-        info: info,
+        fields: [
+          {key: 'className', label: 'Enrolled Courses'},
+          {key: 'type', label: 'Control'}
+        ],
+        items: [],
+        info: {},
         toggle: true
       }
     },
     methods:{
       editProfile: function () {
-        this.$router.push({path: `/profile/${info.id}/edit`});
+        this.$router.push({path: `/profile/${this.info.id}/edit`});
       }
     },
-    beforeCreate: function () {
+    created: function () {
       let xhr = new XMLHttpRequest();
       xhr.open("POST","/api/user",false);
       xhr.setRequestHeader("Content-Type","application/json");
@@ -42,12 +52,7 @@
         router.push({name: "LogInPage"});
       } else{
         let loaded = JSON.parse(xhr.responseText);
-        info.name = loaded.name;
-        info.surname = loaded.surname;
-        info.faculty = loaded.faculty;
-        info.course = loaded.course;
-        info.group = loaded.group;
-        info.id = loaded.id;
+        this.info = loaded;
       }
       xhr = new XMLHttpRequest();
       xhr.open("POST","/api/getclasses",false);
@@ -56,30 +61,19 @@
       if(xhr.status!==200){
       } else{
         let loaded = JSON.parse(xhr.responseText);
-        loaded.forEach(function (clas) {
-          template.enrolledCourses = clas.className;
-          template.control = clas.type;
-          items.push(template);
-          template={};
-        })
+        console.log(loaded);
+        this.items = loaded;
       }
     },
     beforeMount(){
       bus.$emit('userin',localStorage.getItem('userId'));
     }
   }
-  let info = {};
-
   let template={};
-
-  let items = [
-  ]
 </script>
 
 <style scoped>
   .under {
-    display: flex;
-    justify-content: space-between;
   }
 
   .average {

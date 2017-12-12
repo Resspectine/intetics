@@ -1,10 +1,10 @@
 <template>
   <div class="task">
     <div>
-      <input type="checkbox">
-      <b-button @click="addTask">{{task.subject}}</b-button>
+      <b-button @click="deleteTask" variant="danger">Done</b-button>
+      <b-button variant="link" @click="showTask">{{task.subject}}</b-button>
     </div>
-    <div>
+    <div class="stars">
       <icon name="star-o" v-for="n in parseInt(task.priority)"></icon>
     </div>
   </div>
@@ -12,6 +12,7 @@
 
 <script>
   import Icon from 'vue-awesome/components/Icon'
+  import bus from '../bus'
 
   export default {
     components: {Icon},
@@ -27,8 +28,12 @@
       }
     },
     methods: {
-      addTask: function () {
+      showTask: function () {
         console.log('el');
+        bus.$emit('showtask', this.task);
+      },
+      deleteTask: function () {
+        bus.$emit('deletetask', this.task);
       }
     }
   }
@@ -38,6 +43,9 @@
   ];
 </script>
 <style scoped>
+  .stars{
+    margin: auto;
+  }
   .task {
     display: flex;
     justify-content: space-between;

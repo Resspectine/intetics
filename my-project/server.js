@@ -78,9 +78,21 @@ app.post('/user', (req, res) => {
   }
 });
 app.post('/addtask', (req, res) => {
-  let save = db.tasks.save(req.body);
+  let task = req.body;
+  task.taskId = encrypt(task.subject+task.summary+task.id);
+  let save = db.tasks.save(task);
   if (save) {
     res.json('saved correct');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/deletetask', (req, res) => {
+  let id = req.body;
+  let remove = db.tasks.remove(id,true);
+  if (remove) {
+    res.json(id);
   } else {
     console.log("some problems");
     res.status(400).end();
@@ -93,7 +105,7 @@ app.post('/gettasks', (req, res) => {
   let save = db.tasks.find({id: req.body.id});
   if (save) {
     save.forEach(function (el) {
-      el.taskId = counter++;
+      el.taskNumber = counter++;
       if ((new Date(el.date) - date) < 86400000) {
         tasks[0].push(el);
       } else if ((new Date(el.date) - date) < 7 * 86400000) {
@@ -104,21 +116,12 @@ app.post('/gettasks', (req, res) => {
     });
     tasks[0].sort(function (a, b) {
       return parseInt(a.priority) < parseInt(b.priority) ? 1 : -1;
-
     });
     tasks[1].sort(function (a, b) {
-      if (parseInt(a.priority) < parseInt(b.priority)) {
-        return 1;
-      } else {
-        return -1;
-      }
+      return parseInt(a.priority) < parseInt(b.priority) ? 1 : -1;
     });
     tasks[2].sort(function (a, b) {
-      if (parseInt(a.priority) < parseInt(b.priority)) {
-        return 1;
-      } else {
-        return -1;
-      }
+      return parseInt(a.priority) < parseInt(b.priority) ? 1 : -1;
     });
     res.json(tasks);
   } else {
@@ -136,6 +139,7 @@ app.post('/addclass', (req, res) => {
   }
 });
 app.post('/getclasses', (req, res) => {
+  let template = {}
   let classes = db.classes.find({id: req.body.id});
   if (classes) {
     res.json(classes);

@@ -2,26 +2,26 @@
   <div>
     <p>Add task</p>
     <div class="container">
-    <form method="post" @submit.prevent="addTask">
-      <fieldset class="form-group">
-        <input class="form-control" type="text" v-model="form.subject" placeholder="Subject">
-      </fieldset>
-      <fieldset class="form-group">
-        <textarea class="form-control" v-model="form.summary" placeholder="Summary"></textarea>
-      </fieldset>
-      <fieldset class="form-group">
-        <textarea class="form-control" v-model="form.description" placeholder="Description"></textarea>
-      </fieldset>
-      <fieldset class="form-group">
-        <input class="form-control" type="date" v-model="form.date" placeholder="Date">
-      </fieldset>
-      <fieldset class="form-group">
-        <input class="form-control" type="number" min="0" v-model="form.priority" placeholder="Priority">
-      </fieldset>
-      <fieldset class="form-group">
-        <input class="btn btn-success" type="submit" name="submit" value="Add task">
-      </fieldset>
-    </form>
+      <form method="post" @submit.prevent="addTask">
+        <fieldset class="form-group">
+          <input required class="form-control" type="text" v-model="form.subject" placeholder="Subject">
+        </fieldset>
+        <fieldset required class="form-group">
+          <textarea class="form-control" v-model="form.summary" placeholder="Summary"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <textarea required class="form-control" v-model="form.description" placeholder="Description"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <input required class="form-control" type="date" v-model="form.date" placeholder="Date">
+        </fieldset>
+        <fieldset class="form-group">
+          <input required class="form-control" type="number" min="0" max="5" v-model="form.priority" placeholder="Priority">
+        </fieldset>
+        <fieldset class="form-group">
+          <input class="btn btn-success" type="submit" name="submit" value="Add task">
+        </fieldset>
+      </form>
     </div>
   </div>
 </template>
@@ -30,14 +30,15 @@
 
 
   import bus from '../bus'
+
   export default {
     data() {
       return {
         form: {
-          subject:'',
-          summary:'',
-          description:'',
-          date:null,
+          subject: '',
+          summary: '',
+          description: '',
+          date: null,
           priority: null
         }
       }
@@ -48,20 +49,21 @@
         temp.id = this.$route.params.userId;
         temp = JSON.stringify(this.form);
         fetch('/api/addtask', {
-        headers: {"Content-Type": "application/json"},
-        method: 'post',
-        body: temp
-      }).then(function (response) {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("kek");
-        }
-      }).then(function (user) {
-        console.log(user);
-      }).catch(function (er) {
-        alert(er);
-      });
+          headers: {"Content-Type": "application/json"},
+          method: 'post',
+          body: temp
+        }).then(function (response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("kek");
+          }
+        }).then(function (user) {
+          console.log(user);
+        }).catch(function (er) {
+          alert(er);
+        });
+        this.form = {};
       }
     },
     beforeMount() {
@@ -107,8 +109,9 @@
     font-size: 200%;
     font-weight: bold;
   }
-  .container{
+
+  .container {
     margin-top: 10px;
-     width: 60%;
-   }
+    width: 60%;
+  }
 </style>
