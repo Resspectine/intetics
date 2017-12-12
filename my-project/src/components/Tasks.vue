@@ -6,8 +6,8 @@
         <h6 slot="header"
             class="mb-0">Tomorrow</h6>
         <em slot="footer">
-          <b-button @click="addTask"
-                    variant="primary">Add task
+          <b-button
+            variant="primary">Add task
           </b-button>
         </em>
         <b-list-group flush>
@@ -15,7 +15,7 @@
                              :id="task.taskId"
           >
             <TaskElement
-              :task="task"/>
+              :task="task"></TaskElement>
           </b-list-group-item>
         </b-list-group>
       </b-card>
@@ -60,6 +60,7 @@
         </b-list-group>
       </b-card>
     </b-card-group>
+    <div v-if="task">{{task}}</div>
   </div>
 </template>
 
@@ -67,13 +68,14 @@
   import TaskElement from "./TaskElement.vue"
   import bus from '../bus'
 
-  const tasks = [[], [], []];
+  let tasks = [[], [], []];
   export default {
     components: {TaskElement},
     data() {
       return {
-        tasks: tasks,
-        id: ''
+        tasks: [],
+        id: '',
+        task: null
       }
     },
     beforeMount() {
@@ -86,7 +88,6 @@
       }
     },
     created() {
-      let counter=0;
       let date = new Date();
       let user = {id: this.$route.params.userId};
       let xhr = new XMLHttpRequest();
@@ -96,16 +97,8 @@
       if (xhr.status !== 200) {
       } else {
         let loaded = JSON.parse(xhr.responseText);
-        loaded.forEach(function (el) {
-          el.taskId = counter++;
-          if ((new Date(el.date) - date) < 86400000) {
-            tasks[0].push(el);
-          } else if ((new Date(el.date) - date) < 7 * 86400000) {
-            tasks[1].push(el);
-          } else {
-            tasks[2].push(el);
-          }
-        })
+        this.tasks = loaded;
+        console.log(loaded);
       }
     },
   }

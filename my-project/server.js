@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname)));
 
 const db = require('diskdb');
-db.connect('database', ['users', 'classes', 'timetable','tasks']);
+db.connect('database', ['users', 'classes', 'timetable', 'tasks']);
 
 
 function encrypt(text) {
@@ -87,9 +87,40 @@ app.post('/addtask', (req, res) => {
   }
 });
 app.post('/gettasks', (req, res) => {
-  let save = db.tasks.find({id:req.body.id});
+  let date = new Date();
+  let counter = 0;
+  let tasks = [[], [], []];
+  let save = db.tasks.find({id: req.body.id});
   if (save) {
-    res.json(save);
+    save.forEach(function (el) {
+      el.taskId = counter++;
+      if ((new Date(el.date) - date) < 86400000) {
+        tasks[0].push(el);
+      } else if ((new Date(el.date) - date) < 7 * 86400000) {
+        tasks[1].push(el);
+      } else {
+        tasks[2].push(el);
+      }
+    });
+    tasks[0].sort(function (a, b) {
+      return parseInt(a.priority) < parseInt(b.priority) ? 1 : -1;
+
+    });
+    tasks[1].sort(function (a, b) {
+      if (parseInt(a.priority) < parseInt(b.priority)) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    tasks[2].sort(function (a, b) {
+      if (parseInt(a.priority) < parseInt(b.priority)) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+    res.json(tasks);
   } else {
     console.log("some problems");
     res.status(400).end();

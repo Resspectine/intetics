@@ -2,7 +2,7 @@
   <div class="task">
     <div>
       <input type="checkbox">
-      <a href="#">{{task.subject}}</a>
+      <b-button @click="addTask">{{task.subject}}</b-button>
     </div>
     <div>
       <icon name="star-o" v-for="n in parseInt(task.priority)"></icon>
@@ -25,6 +25,11 @@
         type: Object,
         required: true
       }
+    },
+    methods: {
+      addTask: function () {
+        console.log('el');
+      }
     }
   }
 
@@ -33,10 +38,11 @@
   ];
 </script>
 <style scoped>
-  .task{
+  .task {
     display: flex;
     justify-content: space-between;
   }
+
   input {
     vertical-align: middle
   }
