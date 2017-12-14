@@ -1,12 +1,10 @@
 <template>
   <div class="photo">
-    <p class="name" v-text="info.status">Your Faculty</p>
-    <div>
-      <p class="name" v-text="info.name+' '+info.surname"></p>
-      <p class="name" v-text="info.faculty">Your Faculty</p>
-      <p class="name" v-text="info.course+' course'">Your Course</p>
-      <p class="name" v-text="info.group+' group'">Your Group</p>
-    </div>
+    <p class="name" v-text="info.name+' '+info.surname"></p>
+    <p class="name" v-if="info.status" v-text="info.status"></p>
+    <p class="name" v-text="info.faculty"></p>
+    <p class="name" v-text="info.course+' course'"></p>
+    <p class="name" v-text="info.group+' group'"></p>
   </div>
 </template>
 
@@ -24,14 +22,17 @@
 <style>
   .photo {
     display: flex;
-    flex-direction: column;
-    width: 250px;
+    flex-direction: row;
   }
+
+  .status {
+    display: flex;
+    flex-direction: column;
+  }
+
   .name {
-    text-align: center;
-    font-family: 'Abril Fatface', cursive;
-    border-bottom: 4px solid black;
-    font-weight: 600;
+    font-weight: 200;
     font-size: 150%;
+    margin: 10px;
   }
 </style>

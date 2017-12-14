@@ -40,7 +40,6 @@
     background-color: #d8e5ff;
     display: flex;
     margin: 0 auto;
-    width: 70%;
     justify-content: space-between;
   }
 

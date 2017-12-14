@@ -61,7 +61,7 @@
   export default {
     data() {
       return {
-        type: false,
+        type: true,
         newUser: {
           email: "",
           password: "",
@@ -150,7 +150,6 @@
   }
 
   .container {
-    width: 60%;
   }
 </style>
 

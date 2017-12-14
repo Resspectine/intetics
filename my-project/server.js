@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname)));
 
 const db = require('diskdb');
-db.connect('database', ['users', 'classes', 'timetable', 'tasks']);
+db.connect('database', ['users', 'classes', 'timetable', 'tasks', 'custom']);
 
 
 function encrypt(text) {
@@ -82,7 +82,7 @@ app.post('/addtask', (req, res) => {
   task.taskId = encrypt(task.subject + task.summary + task.id);
   let save = db.tasks.save(task);
   if (save) {
-    res.json('saved correct');
+    res.json('Done');
   } else {
     console.log("some problems");
     res.status(400).end();
@@ -134,7 +134,43 @@ app.post('/addclass', (req, res) => {
   clas.classId = encrypt(clas.className + clas.type + clas.id);
   let save = db.classes.save(clas);
   if (save) {
-    res.json('saved correct');
+    res.json('Done');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/addcustom', (req, res) => {
+  let customFind = db.custom.findOne({id: req.body.id});
+  if (!customFind) {
+    let custom = req.body;
+    custom.classId = encrypt(custom.color + custom.size + custom.link + custom.id);
+    let save = db.custom.save(custom);
+    if (save) {
+      res.json('Done');
+    } else {
+      console.log("some problems");
+      res.status(400).end();
+    }
+  } else {
+    let custom = req.body;
+    custom.classId = encrypt(custom.color + custom.size + custom.link + custom.id);
+    let save = db.custom.update({id: custom.id}, custom);
+    if (save) {
+      res.json('Done');
+    } else {
+      console.log("some problems");
+      res.status(400).end();
+    }
+  }
+});
+app.post('/getcustom', (req, res) => {
+  let custom = db.custom.findOne(req.body);
+  if (custom) {
+    custom.size = custom.size + 'px';
+  }
+  if (custom) {
+    res.json(custom);
   } else {
     console.log("some problems");
     res.status(400).end();
@@ -144,6 +180,17 @@ app.post('/deleteclass', (req, res) => {
   let id = req.body;
   console.log(id);
   let remove = db.classes.remove(id, true);
+  if (remove) {
+    res.json(remove);
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/deletelesson', (req, res) => {
+  let id = req.body;
+  console.log(id);
+  let remove = db.timetable.remove(id, true);
   if (remove) {
     res.json(remove);
   } else {
@@ -166,7 +213,7 @@ app.post('/addlesson', (req, res) => {
   if (lesson.lessonId) {
     let save = db.timetable.update({lessonId: lesson.lessonId}, lesson);
     if (save) {
-      res.json('success');
+      res.json('Done');
     } else {
       console.log("some problems");
       res.status(400).end();
@@ -175,7 +222,7 @@ app.post('/addlesson', (req, res) => {
     lesson.lessonId = encrypt(lesson.id + lesson.name);
     let save = db.timetable.save(lesson);
     if (save) {
-      res.json('success');
+      res.json('Done');
     } else {
       console.log("some problems");
       res.status(400).end();

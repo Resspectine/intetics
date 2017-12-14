@@ -139,7 +139,6 @@
   }
 
   .tasks {
-    width: 60%;
     margin: 10px auto;
   }
   .task-detailes{

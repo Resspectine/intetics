@@ -132,13 +132,9 @@
 
   .container {
     margin-top: 20px;
-    width: 60%;
-    display: flex;
-    justify-content: space-between;
   }
 
   .marks {
-    width: 60%;
     height: 100%;
   }
 

@@ -132,7 +132,6 @@
 
   .container {
     margin-top: 10px;
-    width: 60%;
   }
   .alert{
     position: absolute;

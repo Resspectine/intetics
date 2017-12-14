@@ -25,6 +25,14 @@
         <input class="btn btn-success" type="submit" name="submit" value="Add lesson">
       </form>
     </div>
+    <div calss="alert">
+      <b-alert :show="dismissCountDown"
+               variant="success"
+               @dismissed="dismissCountdown=0"
+               @dismiss-count-down="countDownChanged">
+        {{status}}
+      </b-alert>
+    </div>
   </div>
 </template>
 
@@ -47,23 +55,18 @@
         },
         options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         optionsRadio: [{text: 'Daily', value: 'day'},
-          {text: 'Weekly', value: 'week'}]
+          {text: 'Weekly', value: 'week'}],
+        dismissSecs: 3,
+        dismissCountDown: 0,
+        status:''
       }
     },
-    // created(){
-    //   if(this.$route.params.lessonId){
-    //     bus.$on('editlesson',item=>{
-    //       console.log(item);
-    //       this.formLesson.lessonId=item.lessonId;
-    //       console.log(this.formLesson);
-    //     })
-    //   }
-    // },
     methods: {
       sendLesson() {
         let temp = this.formLesson;
         temp.id = this.$route.params.userId;
         temp = JSON.stringify(temp);
+        let showAlert = this.showAlert;
         console.log(this.formLesson);
         fetch('/api/addlesson', {
           headers: {"Content-Type": "application/json"},
@@ -76,7 +79,7 @@
             throw new Error("kek");
           }
         }).then(function (user) {
-          console.log(user);
+          showAlert(user);
         }).catch(function (er) {
           alert(er);
         });
@@ -87,6 +90,14 @@
         this.formLesson.selected = 'day';
         this.formLesson.professor = '';
         this.formLesson.hall = '';
+      },
+      countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert(el) {
+        this.status = el;
+        console.log(this.status);
+        this.dismissCountDown = this.dismissSecs
       }
     },
     beforeMount() {
@@ -143,6 +154,11 @@
 
   .container {
     margin-top: 10px;
-    width: 60%;
+  }
+  .alert{
+    position: absolute;
+    width: 150px;
+    bottom: 10px;
+    left: 10px;
   }
 </style>

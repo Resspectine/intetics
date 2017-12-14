@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
-    <Hat :id="id"/>
-    <router-view></router-view>
-    <!--<AddTask/>-->
+  <div class="bg" :style="styleObject" id="app">
+    <div class="background">
+      <Hat :id="id"/>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -15,20 +16,47 @@
   import bus from './bus'
 
   export default {
-    data(){
-      return{
-        id:''
+    data() {
+      return {
+        id: '',
+        styleObject: {
+          color: '',
+          backgroundImage: ''
+        },
+        active: true
       }
     },
     components: {
       EditProfile, Hat, AddTask, TimeTable, AddLesson
     },
-    created(){
-      bus.$on('userin', user=>{
-        this.id=user;
+    methods: {
+      updateStyle: function () {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/getcustom", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        let router = this.$router;
+        let user = {id: this.$route.params.userId};
+        console.log(user);
+        xhr.send(JSON.stringify(user));
+        if (xhr.status !== 200) {
+        } else {
+          let loaded = JSON.parse(xhr.responseText);
+          this.styleObject.color = loaded.color;
+          this.styleObject.backgroundImage = `url("${loaded.link}")`;
+          console.log(this.styleObject);
+        }
+      }
+    },
+    created() {
+      this.updateStyle();
+      bus.$on('userin', user => {
+        this.id = user;
       });
-      bus.$on('userout', user=>{
-        this.id='';
+      bus.$on('updatestyle', user => {
+        this.updateStyle();
+      });
+      bus.$on('userout', user => {
+        this.id = '';
       })
     }
   }
@@ -46,5 +74,23 @@
 
   h1 {
     text-align: center;
+  }
+
+  body, html {
+    height: 100%;
+  }
+
+  .bg {
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .background{
+    width: 60%;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    background: rgba(255,255,255,0.8);
   }
 </style>

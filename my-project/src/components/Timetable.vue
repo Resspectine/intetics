@@ -11,12 +11,15 @@
         <template slot="name" scope="data">
           {{data.value}}
         </template>
+        <template slot="professor" scope="data">
+          {{data.value}}
+        </template>
         <template slot="hall" scope="data">
           {{data.value}}
         </template>
         <template slot="lessonId" scope="data">
-          <b-button @click="log(data)" size="sm" class="mr-2">
-            Edit
+          <b-button variant="danger" @click="deleteLesson(data)" size="sm" class="mr-2">
+            Delete
           </b-button>
         </template>
       </b-table>
@@ -24,6 +27,14 @@
     <b-button @click="addLesson" class="add">Add Lesson</b-button>
     <p class="date">Choose date</p>
     <input v-if="items" v-model="day" type="date" name="calendar" class="calendar">
+    <div calss="alert">
+      <b-alert :show="dismissCountDown"
+               variant="success"
+               @dismissed="dismissCountdown=0"
+               @dismiss-count-down="countDownChanged">
+        {{status}}
+      </b-alert>
+    </div>
   </div>
 </template>
 
@@ -36,12 +47,16 @@
         fields: [
           {key: 'time', label: 'Time'},
           {key: 'name', label: 'Lesson Name'},
+          {key: 'professor', label: 'Professor'},
           {key: 'hall', label: 'Lecture Hall'},
           {key: 'lessonId', label: 'Actions'}
         ],
         items: [],
         id: '',
-        day: ''
+        day: '',
+        dismissSecs: 3,
+        dismissCountDown: 0,
+        status: ''
       }
     },
     beforeMount() {
@@ -62,13 +77,35 @@
       }
     },
     methods: {
-      log: function (e) {
-        // bus.$emit('editlesson',e.item);
-        // this.$router.push({path: `/timetable/${e.value}/editlesson`})
-        console.log(e);
+      deleteLesson: function (el) {
+        let showAlert = this.showAlert;
+        fetch('/api/deletelesson', {
+          headers: {"Content-Type": "application/json"},
+          method: 'post',
+          body: JSON.stringify({lessonId: el.value})
+        }).then(function (response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("kek");
+          }
+        }).then(function (user) {
+          showAlert(user);
+        }).catch(function (er) {
+          alert(er);
+        });
+        this.items.splice(this.items.indexOf(el.item), 1);
       },
       addLesson: function () {
         this.$router.push({path: `/timetable/${this.id}/addlesson`});
+      },
+      countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert(el) {
+        this.status = el;
+        console.log(this.status);
+        this.dismissCountDown = this.dismissSecs
       }
     },
     watch: {
@@ -115,13 +152,11 @@
     display: table;
     margin-left: 130px;
     margin-top: 30px;
-    width: 600px;
+    width: 100%;
   }
 
   .container {
     margin: 20px auto;
-    width: 60%;
-    justify-content: space-between;
 
   }
 
@@ -142,4 +177,12 @@
     display: flex;
     padding: 10px;
   }
+
+  .alert {
+    position: absolute;
+    width: 150px;
+    bottom: 10px;
+    left: 10px;
+  }
+
 </style>
