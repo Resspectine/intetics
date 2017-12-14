@@ -3,17 +3,30 @@
     <Info :info="info"/>
     <div class="marks">
       <b-table :fields="fields" :class="{ zeroMargins: toggle}" striped hover :items="items">
-        <template slot="enrolledCourses" scope="data">
+        <template slot="className" scope="data">
           {{data.value}}
         </template>
-        <template slot="control" scope="data">
+        <template slot="type" scope="data">
           {{data.value}}
+        </template>
+        <template slot="classId" scope="data">
+          <b-button variant="danger" @click="deleteClass(data)" size="sm" class="mr-2">
+            Delete
+          </b-button>
         </template>
       </b-table>
       <div class="under">
         <b-button variant="primary" @click='editProfile'>Edit Profile
         </b-button>
       </div>
+    </div>
+    <div calss="alert">
+      <b-alert :show="dismissCountDown"
+               variant="success"
+               @dismissed="dismissCountdown=0"
+               @dismiss-count-down="countDownChanged">
+        {{status}}
+      </b-alert>
     </div>
   </div>
 </template>
@@ -29,16 +42,47 @@
       return {
         fields: [
           {key: 'className', label: 'Enrolled Courses'},
-          {key: 'type', label: 'Control'}
+          {key: 'type', label: 'Control'},
+          {key: 'classId', label:'Delete'}
         ],
         items: [],
         info: {},
-        toggle: true
+        toggle: true,
+        dismissSecs: 3,
+        dismissCountDown: 0,
+        status:''
       }
     },
     methods:{
       editProfile: function () {
         this.$router.push({path: `/profile/${this.info.id}/edit`});
+      },
+      deleteClass: function (el) {
+        let showAlert = this.showAlert;
+        fetch('/api/deleteclass', {
+          headers: {"Content-Type": "application/json"},
+          method: 'post',
+          body: JSON.stringify({classId: el.value})
+        }).then(function (response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("kek");
+          }
+        }).then(function (user) {
+          showAlert(user);
+        }).catch(function (er) {
+          alert(er);
+        });
+        this.items.splice(this.items.indexOf(el.item),1);
+      },
+      countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert(el) {
+        this.status = el;
+        console.log(this.status);
+        this.dismissCountDown = this.dismissSecs
       }
     },
     created: function () {
@@ -101,5 +145,12 @@
   .zeroMargins {
     margin: 0;
     width: 100%;
+  }
+
+  .alert{
+    position: absolute;
+    width: 150px;
+    bottom: 10px;
+    left: 10px;
   }
 </style>

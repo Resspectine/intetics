@@ -14,11 +14,11 @@
         <template slot="hall" scope="data">
           {{data.value}}
         </template>
-        <!--<template slot="lessonId" scope="data">-->
-          <!--<b-button @click="log(data)" size="sm" class="mr-2">-->
-            <!--Edit-->
-          <!--</b-button>-->
-        <!--</template>-->
+        <template slot="lessonId" scope="data">
+          <b-button @click="log(data)" size="sm" class="mr-2">
+            Edit
+          </b-button>
+        </template>
       </b-table>
     </div>
     <b-button @click="addLesson" class="add">Add Lesson</b-button>
@@ -37,7 +37,7 @@
           {key: 'time', label: 'Time'},
           {key: 'name', label: 'Lesson Name'},
           {key: 'hall', label: 'Lecture Hall'},
-          // {key: 'lessonId', label: 'Actions'}
+          {key: 'lessonId', label: 'Actions'}
         ],
         items: [],
         id: '',
@@ -62,9 +62,10 @@
       }
     },
     methods: {
-      log:function (e) {
-        bus.$emit('editlesson',e.item);
-        this.$router.push({path: `/timetable/${e.value}/editlesson`})
+      log: function (e) {
+        // bus.$emit('editlesson',e.item);
+        // this.$router.push({path: `/timetable/${e.value}/editlesson`})
+        console.log(e);
       },
       addLesson: function () {
         this.$router.push({path: `/timetable/${this.id}/addlesson`});

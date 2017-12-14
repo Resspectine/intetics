@@ -23,6 +23,14 @@
         </fieldset>
       </form>
     </div>
+    <div calss="alert">
+      <b-alert :show="dismissCountDown"
+               variant="success"
+               @dismissed="dismissCountdown=0"
+               @dismiss-count-down="countDownChanged">
+        {{status}}
+      </b-alert>
+    </div>
   </div>
 </template>
 
@@ -40,7 +48,10 @@
           description: '',
           date: null,
           priority: null
-        }
+        },
+        dismissSecs: 3,
+        dismissCountDown: 0,
+        status:''
       }
     },
     methods: {
@@ -48,6 +59,7 @@
         let temp = this.form;
         temp.id = this.$route.params.userId;
         temp = JSON.stringify(this.form);
+        let showAlert = this.showAlert;
         fetch('/api/addtask', {
           headers: {"Content-Type": "application/json"},
           method: 'post',
@@ -59,11 +71,19 @@
             throw new Error("kek");
           }
         }).then(function (user) {
-          console.log(user);
+          showAlert(user);
         }).catch(function (er) {
           alert(er);
         });
         this.form = {};
+      },
+      countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert(el) {
+        this.status = el;
+        console.log(this.status);
+        this.dismissCountDown = this.dismissSecs
       }
     },
     beforeMount() {
@@ -113,5 +133,11 @@
   .container {
     margin-top: 10px;
     width: 60%;
+  }
+  .alert{
+    position: absolute;
+    width: 150px;
+    bottom: 10px;
+    left: 10px;
   }
 </style>

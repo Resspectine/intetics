@@ -53,10 +53,11 @@
         </b-list-group>
       </b-card>
     </b-card-group>
-    <div v-if="task">
+    <div v-if="task" class="task-detailes">
       <b-card :title="task.subject">
         <p class="card-text">{{task.summary}}</p>
         <p class="card-text">{{task.description}}</p>
+        <p class="card-text">Date due: {{task.date}}</p>
         <b-button @click="task=null">CLOSE</b-button>
       </b-card>
     </div>
@@ -139,6 +140,9 @@
 
   .tasks {
     width: 60%;
+    margin: 10px auto;
+  }
+  .task-detailes{
     margin: 10px auto;
   }
 </style>

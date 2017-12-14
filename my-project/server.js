@@ -79,7 +79,7 @@ app.post('/user', (req, res) => {
 });
 app.post('/addtask', (req, res) => {
   let task = req.body;
-  task.taskId = encrypt(task.subject+task.summary+task.id);
+  task.taskId = encrypt(task.subject + task.summary + task.id);
   let save = db.tasks.save(task);
   if (save) {
     res.json('saved correct');
@@ -90,7 +90,7 @@ app.post('/addtask', (req, res) => {
 });
 app.post('/deletetask', (req, res) => {
   let id = req.body;
-  let remove = db.tasks.remove(id,true);
+  let remove = db.tasks.remove(id, true);
   if (remove) {
     res.json(id);
   } else {
@@ -130,9 +130,22 @@ app.post('/gettasks', (req, res) => {
   }
 });
 app.post('/addclass', (req, res) => {
-  let save = db.classes.save(req.body);
+  let clas = req.body;
+  clas.classId = encrypt(clas.className + clas.type + clas.id);
+  let save = db.classes.save(clas);
   if (save) {
     res.json('saved correct');
+  } else {
+    console.log("some problems");
+    res.status(400).end();
+  }
+});
+app.post('/deleteclass', (req, res) => {
+  let id = req.body;
+  console.log(id);
+  let remove = db.classes.remove(id, true);
+  if (remove) {
+    res.json(remove);
   } else {
     console.log("some problems");
     res.status(400).end();
@@ -222,9 +235,6 @@ app.post('/getlessons', (req, res) => {
     res.status(400).end();
   }
 });
-/*
- * Запуск приложения
- */
 const port = 3000;
 app.listen(port, () => {
   console.log(`App listening on port ${port}!`)
